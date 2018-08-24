@@ -1,22 +1,18 @@
 const router = require('koa-router')()
-const sha1 = require('sha1')
-var config = require('../wechat/index');
+const wechat  = require('../wechat/wechat')
+const config  = require('../wechat/config')
 
+var wechatApp = new wechat(config)
 
 router.get('/', (ctx, next) => {
-    var token = config.config.token;
-    var signature = ctx.query.signature;
-    var nonce = ctx.query.nonce;
-    var timestamp = ctx.query.timestamp;
-    var echostr = ctx.query.echostr;
-    var str = [token, timestamp, nonce].sort().join('');
-    var sha = sha1(str);
-    if (sha === signature) {
-        ctx.body = echostr + '';
-    } else {
-        ctx.body = { code: -1, msg: "fail"}
-    }
+  wechatApp.auth(ctx)
 })
+
+router.get('/getAccessToken',(ctx, next)=>{
+  wechatApp.getAccessToken().then(function(data){
+    ctx.body = data;
+  });
+});
 
 router.get('/string', async (ctx, next) => {
   ctx.body = 'koa2 string'
