@@ -1,7 +1,7 @@
 const sha1 = require('sha1');
 const https = require('https');
 const util = require('util');
-const Buffer = require('buffer').Buffer;
+const fs = require('fs');
 const accessTokenJson = require('./accessToken.json')
 
 //构建 WeChat 对象 即 js中 函数就是对象
@@ -22,7 +22,6 @@ var WeChat = function(config){
   this.requestGet = function(url){
     return new Promise(function(resolve,reject){
       https.get(url,function(res){
-        console.log(res)
         var buffer = [],result = "";
         //监听 data 事件
         res.on('data',function(data){
@@ -30,7 +29,7 @@ var WeChat = function(config){
         });
         //监听 数据传输完成事件
         res.on('end',function(){
-          result = Buffer.concat(buffer,buffer.length).toString('utf-8');
+          result = buffer.toString('utf-8');
           //将最后结果返回
           resolve(result);
         });
@@ -83,13 +82,18 @@ WeChat.prototype.getAccessToken = function(){
     if(accessTokenJson.access_token === "" || accessTokenJson.expires_time < currentTime){
       that.requestGet(url).then(function(data){
         var result = JSON.parse(data);
+        console.log('========')
+        console.log(data)
+        console.log('=========')
         if(data.indexOf("errcode") < 0){
           accessTokenJson.access_token = result.access_token;
           accessTokenJson.expires_time = new Date().getTime() + (parseInt(result.expires_in) - 200) * 1000;
           //更新本地存储的
-          fs.writeFile('./wechat/access_token.json',JSON.stringify(accessTokenJson));
-          //将获取后的 access_token 返回
-          resolve(accessTokenJson.access_token);
+          fs.writeFile('./wechat/access_token.json',JSON.stringify(accessTokenJson),function (err) {
+            console.log(result.access_token)
+            //将获取后的 access_token 返回
+            resolve(accessTokenJson.access_token);
+          })
         }else{
           //将错误返回
           resolve(result);
