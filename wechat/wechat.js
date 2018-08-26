@@ -1,8 +1,9 @@
 const sha1 = require('sha1');
 const https = require('https');
 const util = require('util');
+var URL = require('url');
 const fs = require('fs');
-const accessTokenJson = require('./accessToken.json')
+const accessTokenJson = require('./access_token.json')
 
 //构建 WeChat 对象 即 js中 函数就是对象
 var WeChat = function(config){
@@ -37,34 +38,79 @@ var WeChat = function(config){
         reject(err);
       });
     });
-  }
+  };
+
+    this.requestPost = function(url,data){
+        return new Promise(function(resolve,reject){
+            //解析 url 地址
+            var urlData = URL.parse(url);
+            //设置 https.request  options 传入的参数对象
+            var options={
+                //目标主机地址
+                hostname: urlData.hostname,
+                //目标地址
+                path: urlData.path,
+                //请求方法
+                method: 'POST',
+                //头部协议
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                    'Content-Length': Buffer.byteLength(data,'utf-8')
+                }
+            };
+            var req = https.request(options,function(res){
+                var buffer = [],result = '';
+                //用于监听 data 事件 接收数据
+                res.on('data',function(data){
+                    buffer.push(data);
+                });
+                //用于监听 end 事件 完成数据的接收
+                res.on('end',function(){
+                    result = Buffer.concat(buffer).toString('utf-8');
+                    resolve(result);
+                })
+            })
+            //监听错误事件
+                .on('error',function(err){
+                    console.log(err);
+                    reject(err);
+                });
+            //传入数据
+            req.write(data);
+            req.end();
+        });
+    }
 }
 
 /**
  * 微信接入验证
  */
 WeChat.prototype.auth = function(option){
+    return new Promise((resolve,reject)=>{
+        var signature = option.query.signature,//微信加密签名
+            timestamp = option.query.timestamp,//时间戳
+            nonce = option.query.nonce,//随机数
+            echostr = option.query.echostr;//随机字符串
+
+        //2.将token、timestamp、nonce三个参数进行字典序排序
+        var array = [this.token,timestamp,nonce];
+        array.sort();
+
+        //3.将三个参数字符串拼接成一个字符串进行sha1加密
+        var tempStr = array.join('');
+
+        var resultCode = sha1(tempStr); //对传入的字符串进行加密
+
+        //4.开发者获得加密后的字符串可与signature对比，标识该请求来源于微信
+        if(resultCode === signature){
+            option.body = echostr + '';
+            resolve()
+        }else{
+            resolve()
+            option.body = { code: -1, msg: "fail"}
+        }
+    })
   //1.获取微信服务器Get请求的参数 signature、timestamp、nonce、echostr
-  var signature = option.query.signature,//微信加密签名
-    timestamp = option.query.timestamp,//时间戳
-    nonce = option.query.nonce,//随机数
-    echostr = option.query.echostr;//随机字符串
-
-  //2.将token、timestamp、nonce三个参数进行字典序排序
-  var array = [this.token,timestamp,nonce];
-  array.sort();
-
-  //3.将三个参数字符串拼接成一个字符串进行sha1加密
-  var tempStr = array.join('');
-
-  var resultCode = sha1(tempStr); //对传入的字符串进行加密
-
-  //4.开发者获得加密后的字符串可与signature对比，标识该请求来源于微信
-  if(resultCode === signature){
-    option.body = echostr + '';
-  }else{
-    option.body = { code: -1, msg: "fail"}
-  }
 }
 
 /*
