@@ -4,6 +4,7 @@ const util = require('util');
 var URL = require('url');
 const fs = require('fs');
 const accessTokenJson = require('./access_token.json')
+const parseString = require('xml2js').parseString;//引入xml2js包
 
 //构建 WeChat 对象 即 js中 函数就是对象
 var WeChat = function(config){
@@ -151,6 +152,34 @@ WeChat.prototype.getAccessToken = function(){
     }
   });
 }
-
+WeChat.prototype.handleMsg = function(req,res){
+  var buffer = [];
+  //监听 data 事件 用于接收数据
+  req.on('data',function(data){
+    buffer.push(data);
+  });
+  //监听 end 事件 用于处理接收完成的数据
+  req.on('end',function(){
+    var msgXml = Buffer.concat(buffer).toString('utf-8');
+    //解析xml
+    parseString(msgXml,{explicitArray : false},function(err,result){
+      if(!err){
+        result = result.xml;
+        var toUser = result.ToUserName; //接收方微信
+        var fromUser = result.FromUserName;//发送仿微信
+        //判断事件类型
+        switch(result.Event.toLowerCase()){
+          case 'subscribe':
+            //回复消息
+            res.send(msg.txtMsg(fromUser,toUser,'欢迎关注 hvkcoder 公众号，一起斗图吧'));
+            break;
+        }
+      }else{
+        //打印错误信息
+        console.log(err);
+      }
+    })
+  });
+}
 //暴露可供外部访问的接口
 module.exports = WeChat;
