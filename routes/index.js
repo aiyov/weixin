@@ -26,6 +26,7 @@ router.get('/getAccessToken',(ctx, next)=>{
 });
 
 router.get('/string', async (ctx, next) => {
+    ctx.res.setHeader('Content-Type', 'application/html')
   ctx.body = 'koa2 string'
 })
 
@@ -37,7 +38,7 @@ router.get('/json', async (ctx, next) => {
 router.post('/',async(ctx, next)=>{
   await wechatApp.handleMsg(ctx).then((result)=>{
     ctx.res.setHeader('Content-Type', 'application/xml')
-    ctx.res.send(result)
+    ctx.res.end(result)
   });
 })
 
