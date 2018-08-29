@@ -34,9 +34,11 @@ router.get('/json', async (ctx, next) => {
     title: 'koa2 json'
   }
 })
-router.post('/',async (ctx, next)=>{
-  console.log('===================')
-  console.log(ctx)
-  wechatApp.handleMsg(ctx.request,ctx.response);
+router.post('/',async(ctx, next)=>{
+  await wechatApp.handleMsg(ctx).then((result)=>{
+    ctx.res.setHeader('Content-Type', 'application/xml')
+    ctx.res.send(result)
+  });
 })
+
 module.exports = router
