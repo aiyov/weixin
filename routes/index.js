@@ -37,7 +37,7 @@ router.get('/json', async (ctx, next) => {
 router.post('/',async(ctx, next)=>{
   await wechatApp.handleMsg(ctx).then((result)=>{
     ctx.res.setHeader('Content-Type', 'application/xml')
-    ctx.res.send(result)
+    ctx.res.end(result)
   });
 })
 
