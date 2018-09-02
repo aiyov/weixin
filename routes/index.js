@@ -26,8 +26,7 @@ router.get('/getAccessToken',(ctx, next)=>{
 });
 
 router.get('/string', async (ctx, next) => {
-    ctx.res.setHeader('Content-Type', 'application/html')
-  ctx.body = 'koa2 string'
+  await ctx.render('index')
 })
 
 router.get('/json', async (ctx, next) => {
