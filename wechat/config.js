@@ -8,7 +8,8 @@ module.exports = {
         apiDomain: "https://api.weixin.qq.com/",
         apiURL: {
             accessTokenApi: "%scgi-bin/token?grant_type=client_credential&appid=%s&secret=%s",
-            createMenu: "%scgi-bin/menu/create?access_token=%s"
+            createMenu: "%scgi-bin/menu/create?access_token=%s",
+            uploadimg: "%scgi-bin/media/uploadimg?access_token=%s",
         }
     }
 }
