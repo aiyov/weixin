@@ -10,6 +10,7 @@ module.exports = {
             accessTokenApi: "%scgi-bin/token?grant_type=client_credential&appid=%s&secret=%s",
             createMenu: "%scgi-bin/menu/create?access_token=%s",
             uploadimg: "%scgi-bin/media/uploadimg?access_token=%s",
+            groupMessage: "%scgi-bin/message/mass/sendall?access_token=%s",
         }
     }
 }

@@ -129,6 +129,7 @@ WeChat.prototype.getAccessToken = function () {
         //判断 本地存储的 access_token 是否有效
         if (accessTokenJson.access_token === "" || accessTokenJson.expires_time < currentTime) {
             that.requestGet(url).then(function (data) {
+                console.log(JSON.parse(data))
                 var result = JSON.parse(data);
                 if (data.indexOf("errcode") < 0) {
                     accessTokenJson.access_token = result.access_token;
@@ -225,6 +226,27 @@ WeChat.prototype.handleMsg = function (ctx) {
                 }
             })
         });
+    })
+}
+WeChat.prototype.groupMessage = function () {
+    const data = {
+        "filter":{
+            "is_to_all":true,
+        },
+        "text":{
+            "content":"这个是消息测试哦"
+        },
+        "msgtype":"text"
+    };
+    return new Promise((resolve,reject)=>{
+        const url = util.format(this.apiURL.groupMessage,this.apiDomain,accessTokenJson.access_token);
+        console.log(data)
+        this.requestPost(url,JSON.stringify(data)).then(function (message) {
+            console.log(message)
+            resolve(message)
+        }).catch(function (error) {
+            console.log(error)
+        })
     })
 }
 //暴露可供外部访问的接口

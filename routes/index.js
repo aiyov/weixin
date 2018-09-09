@@ -73,4 +73,11 @@ router.get('/uploadimg',async(ctx, next)=>{
     });
 })
 
+router.get('/groupmessage',async(ctx, next)=>{
+    await wechatApp.groupMessage().then(function(data){
+        //将结果打印
+        ctx.body = data;
+    });
+})
+
 module.exports = router
