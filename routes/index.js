@@ -43,19 +43,24 @@ router.post('/',async(ctx, next)=>{
 })
 
 router.post('/file-upload',async(ctx, next)=>{
-    console.log(ctx.req.file)
     var buffer = [];
     //监听 data 事件 用于接收数据
+    console.log('开始了')
     ctx.req.addListener('data', function (data) {
         buffer.push(data);
     });
     ctx.req.addListener('end', function () {
         var img = Buffer.concat(buffer).toString('utf-8');
+        console.log('============')
         var url = util.format(wechatApp.apiURL.uploadimg,wechatApp.apiDomain,accessTokenJson.access_token);
         wechatApp.requestPost(url,img).then(function(data){
-            //将结果打印
             ctx.body = data;
+            console.log('++++++++++++')
             console.log(data)
+        },(error)=>{
+          // console.log(error)
+        }).catch((error)=>{
+          // console.log(error)
         });
     })
 
