@@ -11,6 +11,7 @@
   "dependencies": {
     "buffer": "^5.2.0",
     "debug": "^2.6.3",
+    "formidable": "^1.2.1",
     "https": "^1.0.0",
     "koa": "^2.2.0",
     "koa-bodyparser": "^3.2.0",
@@ -22,6 +23,8 @@
     "koa-static": "^3.0.0",
     "koa-views": "^5.2.1",
     "pug": "^2.0.0-rc.1",
+    "request": "^2.88.0",
+    "request-promise": "^4.2.2",
     "sha1": "^1.1.1",
     "util": "^0.11.0",
     "xml2js": "^0.4.19"
