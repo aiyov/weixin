@@ -1,9 +1,12 @@
-const router = require('koa-router')()
-const wechat  = require('../wechat/wechat')
-const config  = require('../wechat/config')
-const menus = require('../wechat/menu.json')
+const router = require('koa-router')();
+const wechat  = require('../wechat/wechat');
+const config  = require('../wechat/config');
+const menus = require('../wechat/menu.json');
+const formidable = require("formidable");
+const fs = require('fs');
 const util = require('util');
-const accessTokenJson = require('../wechat/access_token.json')
+const accessTokenJson = require('../wechat/access_token.json');
+var request = require('request-promise');
 
 var wechatApp = new wechat(config)
 
@@ -43,38 +46,31 @@ router.post('/',async(ctx, next)=>{
 })
 
 router.post('/file-upload',async(ctx, next)=>{
-    var buffer = [];
-    //监听 data 事件 用于接收数据
-    console.log('开始了')
-    ctx.req.addListener('data', function (data) {
-        buffer.push(data);
-    });
-    ctx.req.addListener('end', function () {
-        var img = Buffer.concat(buffer).toString('utf-8');
-        console.log('============')
+    var form = new formidable.IncomingForm();
+    form.parse(ctx.req,async function(err,fields,files){
+        if(err){throw err; return;}
+        console.log(files)
         var url = util.format(wechatApp.apiURL.uploadimg,wechatApp.apiDomain,accessTokenJson.access_token);
-        wechatApp.requestPost(url,img).then(function(data){
-            ctx.body = data;
-            console.log('++++++++++++')
+        request.post({url,formData:files}).then((data)=>{
             console.log(data)
-        },(error)=>{
-          // console.log(error)
+            ctx.body = data;
         }).catch((error)=>{
-          // console.log(error)
+            ctx.body = error;
         });
-    })
-
+    });
 })
 
 router.get('/uploadimg',async(ctx, next)=>{
     var url = util.format(wechatApp.apiURL.uploadimg,wechatApp.apiDomain,accessTokenJson.access_token);
     //使用 Post 请求图片地址
     const data = {
-        media: '../public/images/vue.png'
+        media: fs.createReadStream(__dirname+'/vue.png')
     }
-    await wechatApp.requestPost(url,new FormData(data)).then(function(data){
-        //将结果打印
+    console.log(data)
+    await request.post({url,formData:data}).then((data)=>{
         ctx.body = data;
+    }).catch((error)=>{
+        ctx.body = error;
     });
 })
 
