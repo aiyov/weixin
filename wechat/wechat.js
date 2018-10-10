@@ -4,6 +4,7 @@ const util = require('util');
 var URL = require('url');
 const fs = require('fs');
 const msg = require('./msg');
+const request = require('request-promise');
 const accessTokenJson = require('./access_token.json')
 const parseString = require('xml2js').parseString;//引入xml2js包
 
@@ -247,6 +248,23 @@ WeChat.prototype.groupMessage = function () {
         }).catch(function (error) {
             console.log(error)
         })
+    })
+}
+
+WeChat.prototype.getMediaId = function (){
+    var url = util.format(this.apiURL.thumbMediaId,this.apiDomain,accessTokenJson.access_token,'thumb');
+    //使用 Post 请求图片地址
+    const data = {
+        media: fs.createReadStream(__dirname+'/vue.png')/*缩略图 支持jpg，64KB最大*/
+    }
+
+    return new Promise((resolve, reject)=>{
+        request.post({url,formData:data}).then((data)=>{
+            console.log(data)
+            resolve(JSON.parse(data).media_id)
+        }).catch((error)=>{
+            reject(error)
+        });
     })
 }
 //暴露可供外部访问的接口

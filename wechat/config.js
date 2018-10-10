@@ -12,7 +12,8 @@ module.exports = {
             uploadimg: "%scgi-bin/media/uploadimg?access_token=%s",
             groupMessage: "%scgi-bin/message/mass/sendall?access_token=%s",
             material: "%scgi-bin/material/batchget_material?access_token=%s",
-            thumbMediaId:"/cgi-bin/media/upload?access_token=%s&type=%s"
+            thumbMediaId:"%scgi-bin/media/upload?access_token=%s&type=%s",
+            addNews: "%scgi-bin/material/add_news?access_token=%s"
         }
     }
 }

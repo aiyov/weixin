@@ -6,7 +6,7 @@ const formidable = require("formidable");
 const fs = require('fs');
 const util = require('util');
 const accessTokenJson = require('../wechat/access_token.json');
-var request = require('request-promise');
+const request = require('request-promise');
 
 var wechatApp = new wechat(config)
 
@@ -75,6 +75,31 @@ router.get('/material',async(ctx, next)=>{
       ctx.body = error;
     });
   });
+})
+
+router.get('/addnews',async(ctx, next)=>{
+    var url = util.format(wechatApp.apiURL.addNews,wechatApp.apiDomain,accessTokenJson.access_token);
+    await wechatApp.getMediaId().then(async (data)=>{
+        console.log(data)
+        const news = {
+            "articles": [{
+                "title": '完美',
+                "thumb_media_id": data,
+                "author": 'aiyov',
+                "digest": '测试',
+                "show_cover_pic": 1,
+                "content": '这个事测试内容哦',
+                "content_source_url": 'www.baidu.com'
+            }]
+        };
+
+        await request({method: 'POST',json: true,uri:url,body:news}).then((data)=>{
+            console.log(data)
+            ctx.body = data;
+        }).catch((error)=>{
+            ctx.body = error;
+        });
+    })
 })
 
 router.get('/thumbMediaId',async(ctx, next)=>{
