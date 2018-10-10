@@ -61,13 +61,29 @@ router.post('/file-upload',async(ctx, next)=>{
 })
 
 router.get('/material',async(ctx, next)=>{
-  var url = util.format(wechatApp.apiURL.material,wechatApp.apiDomain,accessTokenJson.access_token);
+  await wechatApp.getAccessToken().then(async function(data){
+    var url = util.format(wechatApp.apiURL.material,wechatApp.apiDomain,accessTokenJson.access_token);
+    const body = {
+      "type":"news",
+      "offset":0,
+      "count":5
+    };
+    await request({method: 'POST',json: true,uri:url,body:body}).then((data)=>{
+      console.log(data)
+      ctx.body = data;
+    }).catch((error)=>{
+      ctx.body = error;
+    });
+  });
+})
+
+router.get('/thumbMediaId',async(ctx, next)=>{
+  var url = util.format(wechatApp.apiURL.thumbMediaId,wechatApp.apiDomain,accessTokenJson.access_token,'image');
+  //使用 Post 请求图片地址
   const data = {
-    "type":"news",
-    "offset":0,
-    "":5
-  };
-  await request.post(url,{form:data}).then((data)=>{
+    media: fs.createReadStream(__dirname+'/vue.png')
+  }
+  await request.post({url,formData:data}).then((data)=>{
     ctx.body = data;
   }).catch((error)=>{
     ctx.body = error;

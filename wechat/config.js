@@ -11,7 +11,8 @@ module.exports = {
             createMenu: "%scgi-bin/menu/create?access_token=%s",
             uploadimg: "%scgi-bin/media/uploadimg?access_token=%s",
             groupMessage: "%scgi-bin/message/mass/sendall?access_token=%s",
-            material: "%scgi-bin/material/batchget_material?access_token=%s"
+            material: "%scgi-bin/material/batchget_material?access_token=%s",
+            thumbMediaId:"/cgi-bin/media/upload?access_token=%s&type=%s"
         }
     }
 }
