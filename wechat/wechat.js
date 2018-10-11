@@ -255,7 +255,7 @@ WeChat.prototype.getMediaId = function (){
     var url = util.format(this.apiURL.thumbMediaId,this.apiDomain,accessTokenJson.access_token,'thumb');
     //使用 Post 请求图片地址
     const data = {
-        media: fs.createReadStream(__dirname+'/vue.png')/*缩略图 支持jpg，64KB最大*/
+        media: fs.createReadStream(__dirname+'/vue.jpg')/*缩略图 支持jpg，64KB最大*/
     }
 
     return new Promise((resolve, reject)=>{
