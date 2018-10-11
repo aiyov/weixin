@@ -108,18 +108,6 @@ router.get('/addnews',async(ctx, next)=>{
     })
 })
 
-router.get('/thumbMediaId',async(ctx, next)=>{
-  var url = util.format(wechatApp.apiURL.thumbMediaId,wechatApp.apiDomain,accessTokenJson.access_token,'image');
-  //使用 Post 请求图片地址
-  const data = {
-    media: fs.createReadStream(__dirname+'/vue.jpg')
-  }
-  await request.post({url,formData:data}).then((data)=>{
-    ctx.body = data;
-  }).catch((error)=>{
-    ctx.body = error;
-  });
-})
 
 router.get('/uploadimg',async(ctx, next)=>{
     var url = util.format(wechatApp.apiURL.uploadimg,wechatApp.apiDomain,accessTokenJson.access_token);
@@ -141,6 +129,7 @@ router.get('/groupmessage',async(ctx, next)=>{
     });
 })
 
+/*清除接口调用次数*/
 router.get('/clear',async(ctx, next)=>{
   var url = util.format(wechatApp.apiURL.clearQuota,wechatApp.apiDomain,accessTokenJson.access_token);
   await request({method: "POST",uri:url,json:true,body: {appid:wechatApp.appID}}).then((data)=>{
