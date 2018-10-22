@@ -237,7 +237,7 @@ WeChat.prototype.groupMessage = function () {
       "is_to_all": true,
     },
     "text": {
-      "content": "这个是消息测试哦"
+      "content": "这个是消息测试哦哦"
     },
     "msgtype": "text"
   };

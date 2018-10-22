@@ -31,7 +31,7 @@ router.get('/userInfo',async function (ctx,next) {
   await wechatApp.getAccessToken().then(()=>{
     return wechatApp.getUserList()
   }).then((data)=>{
-    var openId = JSON.parse(data).data.openid[1]
+    var openId = JSON.parse(data).data.openid[0]
     return wechatApp.getUserInfo(openId)
   }).then((data)=>{
     ctx.body = data;
