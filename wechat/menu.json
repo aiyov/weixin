@@ -1,8 +1,8 @@
 {"button":[
     {
       "type":"view",
-      "name":"aiyov123",
-      "url":"https://open.weixin.qq.com/connect/oauth2/authorize?appid=wxffda237719758704&redirect_uri=http%3A%2F%2Ffindjay.cn%2Fstring&response_type=code&scope=snsapi_userinfo&state=STATE#wechat_redirect"
+      "name":"aiyov",
+      "url":"https://open.weixin.qq.com/connect/oauth2/authorize?appid=wxffda237719758704&redirect_uri=http%3A%2F%2Ffindjay.cn&response_type=code&scope=snsapi_userinfo&state=STATE#wechat_redirect"
     },
     {
       "type":"click",

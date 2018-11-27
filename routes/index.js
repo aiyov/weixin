@@ -12,9 +12,11 @@ var wechatApp = new wechat(config)
 
 router.get('/', (ctx, next) => {
   wechatApp.auth(ctx).then(()=>{
+    console.log(123)
       wechatApp.getAccessToken().then(function(data){
           var url = util.format(wechatApp.apiURL.createMenu,wechatApp.apiDomain,data);
           //使用 Post 请求创建微信菜单
+        console.log(456)
           wechatApp.requestPost(url,JSON.stringify(menus)).then(function(data){
               //将结果打印
               console.log(data);
